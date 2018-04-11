@@ -15,6 +15,10 @@
 from os.path import dirname, join
 
 import pyjokes
+import mycroft.util                             #Added
+from mycroft.audio import wait_while_speaking   #Added
+import time                                     #Added
+import GPIO                                     #Added
 
 from adapt.intent import IntentBuilder
 from mycroft.skills.core import MycroftSkill, intent_handler
@@ -29,8 +33,13 @@ class JokingSkill(MycroftSkill):
         super(JokingSkill, self).__init__(name="JokingSkill")
 
     def speak_joke(self, lang, category):
+        GPIO.set("GPIO2","Off")         #Added
+        GPIO.set("GPIO3","On")          #Added
+        GPIO.set("GPIO4","On")          #Added
         self.speak(pyjokes.get_joke(language=lang, category=category))
-
+        mycroft.audio.wait_while_speaking() #Added
+        GPIO.set("GPIO3","Off")         #Added
+        
     @intent_handler(IntentBuilder("JokingIntent").require("Joke"))
     def handle_general_joke(self, message):
         selected = choice(joke_types)
